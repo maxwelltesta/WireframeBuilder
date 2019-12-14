@@ -13,9 +13,9 @@ class Navbar extends React.Component {
     const links = auth.uid ? <LoggedInLinks profile={profile} /> : <LoggedOutLinks />;
 
     return (
-      <nav className="nav-wrapper grey darken-3">
+      <nav className="nav-wrapper amber lighten-2">
         <div className="container">
-          <Link to="/" className="brand-logo">Wireframer!</Link>
+          <Link to="/" className="black-text">Wireframer!</Link>
           {links}
         </div>
       </nav>

@@ -5,7 +5,8 @@ class LoggedOutLinks extends React.Component {
   render() {
     return (
       <ul className = "right" >
-        <li><NavLink to="/register">Register</NavLink></li>
+        <li><NavLink to="/login" className="black-text">Login</NavLink></li>
+        <li><NavLink to="/register" className="black-text">Register</NavLink></li>
       </ul>
     );
   }
