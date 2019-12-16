@@ -6,6 +6,7 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { getFirestore } from 'redux-firestore';
 import { Modal, Button } from 'react-materialize';
 import Control from './Control'
+import { Rnd } from "react-rnd"
 
 class EditScreen extends React.Component {
     state = {
@@ -13,6 +14,8 @@ class EditScreen extends React.Component {
         width: (this.props.wireframe !== null && this.props.wireframe.width !== undefined) ? this.props.wireframe.width : "",
         height: (this.props.wireframe !== null && this.props.wireframe.height !== undefined) ? this.props.wireframe.height : "",
         controls: (this.props.wireframe !== null && this.props.wireframe.controls !== undefined) ? this.props.wireframe.controls : "",
+        selected: '',
+        zoom: 1
     }
     changedTime=false;
 
@@ -21,10 +24,20 @@ class EditScreen extends React.Component {
         fireStore.collection('wireframes').doc(this.props.wireframe.id).update({ time: Date.now() })
     }
     processZoomIn = () => {
-        
+        let newZoom = this.state.zoom;
+        newZoom = newZoom * 2;
+        this.setState(state => ({
+            ...state,
+            zoom: newZoom
+        }))
     }
     processZoomOut = () => {
-
+        let newZoom = this.state.zoom;
+        newZoom = newZoom / 2;
+        this.setState(state => ({
+            ...state,
+            zoom: newZoom
+        }))
     }
     processSave = () => {
         getFirestore().collection('wireframes').doc(this.props.wireframe.id).update({
@@ -47,7 +60,7 @@ class EditScreen extends React.Component {
     handleTextChange = (e) => {
         const { target } = e;
         const targetName = target.name;
-        const selected = this.props.wireframe.selected;
+        const selected = this.state.selected;
         const newControls = this.props.wireframe.controls;
         newControls[selected.key].text = target.value;
 
@@ -59,7 +72,7 @@ class EditScreen extends React.Component {
     handleFontSizeChange = (e) => {
         const { target } = e;
         const targetName = target.name;
-        const selected = this.props.wireframe.selected;
+        const selected = this.state.selected;
         const newControls = this.props.wireframe.controls;
         newControls[selected.key].font_size = target.value;
 
@@ -71,7 +84,7 @@ class EditScreen extends React.Component {
     handleFontColorChange = (e) => {
         const { target } = e;
         const targetName = target.name;
-        const selected = this.props.wireframe.selected;
+        const selected = this.state.selected;
         const newControls = this.props.wireframe.controls;
         newControls[selected.key].text_color = target.value;
 
@@ -83,7 +96,7 @@ class EditScreen extends React.Component {
     handleBackgroundChange = (e) => {
         const { target } = e;
         const targetName = target.name;
-        const selected = this.props.wireframe.selected;
+        const selected = this.state.selected;
         const newControls = this.props.wireframe.controls;
         newControls[selected.key].background_color = target.value;
 
@@ -95,7 +108,7 @@ class EditScreen extends React.Component {
     handleBorderColorChange = (e) => {
         const { target } = e;
         const targetName = target.name;
-        const selected = this.props.wireframe.selected;
+        const selected = this.state.selected;
         const newControls = this.props.wireframe.controls;
         newControls[selected.key].border_color = target.value;
 
@@ -107,7 +120,7 @@ class EditScreen extends React.Component {
     handleBorderWidthChange = (e) => {
         const { target } = e;
         const targetName = target.name;
-        const selected = this.props.wireframe.selected;
+        const selected = this.state.selected;
         const newControls = this.props.wireframe.controls;
         newControls[selected.key].border_thickness = target.value;
 
@@ -119,7 +132,7 @@ class EditScreen extends React.Component {
     handleBorderRadiusChange = (e) => {
         const { target } = e;
         const targetName = target.name;
-        const selected = this.props.wireframe.selected;
+        const selected = this.state.selected;
         const newControls = this.props.wireframe.controls;
         newControls[selected.key].border_radius = target.value;
 
@@ -239,9 +252,10 @@ class EditScreen extends React.Component {
     }
     deselect = (e) => {
         e.preventDefault();
-        getFirestore().collection('wireframes').doc(this.props.wireframe.id).update({
+        this.setState(state => ({
+            ...state,
             selected: null
-        });
+        }))
         this.refs.text.value = ''
         this.refs.font_size.value = ''
         this.refs.text_color.value = ''
@@ -249,6 +263,88 @@ class EditScreen extends React.Component {
         this.refs.border_color.value = ''
         this.refs.border_thickness.value = ''
         this.refs.border_radius.value = ''
+    }
+    handleSelection = (e, control) => {
+        e.stopPropagation();
+        this.setState(state => ({
+            ...state,
+            selected: control
+        }))
+        this.handleSelectionValues(control);
+    }
+    handleSelectionValues = (control) => {
+        this.refs.text.value = control.text;
+        this.refs.font_size.value = control.font_size;
+        this.refs.text_color.value = control.text_color;
+        this.refs.background_color.value = control.background_color;
+        this.refs.border_color.value = control.border_color;
+        this.refs.border_thickness.value = control.border_thickness;
+        this.refs.border_radius.value = control.border_radius;
+    }
+    processDeleteControl = () => {
+        if (!this.state.selected) {
+
+        }
+        else {
+            const newControls = this.state.controls;
+            newControls.splice(this.state.selected.key, 1)
+            for (let i = 0; i < newControls.length; i++) {
+                newControls[i].key = i;
+            }
+            this.setState(state => ({
+                ...state,
+                controls: newControls
+            }))
+            this.deselect.bind(this);
+            }
+        }
+    processDuplicateControl = () => {
+        if (!this.state.selected) {
+        }
+        else {
+            const newControls = this.state.controls;
+            const dupe = this.state.selected;
+        let newControl = {
+            key: newControls.length,
+            type: dupe.type,
+            text: dupe.text,
+            selected: dupe.selected,
+            width: dupe.width,
+            height: dupe.height,
+            x_position: dupe.x_position + 100,
+            y_position: dupe.y_position + 100,
+            font_size: dupe.font_size,
+            text_color: dupe.text_color,
+            background_color: dupe.background_color,
+            border_color: dupe.border_color,
+            border_thickness: dupe.border_thickness,
+            border_radius: dupe.border_radius
+        }
+        newControls.push(newControl);
+        this.setState(state => ({
+            ...state,
+            controls: newControls
+        }))
+        }
+    }
+    handleKeyPress = (e) => {
+        if (e.ctrlKey) {
+            if (e.keyCode === 68) {
+                this.processDuplicateControl();
+            }
+            else if(e.keyCode === 8) {
+                this.processDeleteControl();
+            }
+        }
+    }
+    componentDidMount = () => {
+        // DISPLAY WHERE WE ARE
+        window.addEventListener("keydown", this.handleKeyPress);
+    }
+
+    componentWillUnmount = () => {
+        // DISPLAY WHERE WE ARE
+        window.removeEventListener("keydown", this.handleKeyPress);
     }
     render() {
         if (!this.props.auth.uid) {
@@ -262,7 +358,7 @@ class EditScreen extends React.Component {
             this.updateTime();
         }
         return(
-            <div className="row">
+            <div className="row" >
                 <div className="col s3 control_picker row">
                     <div className="functions">
                         <div className="col s3">
@@ -317,47 +413,84 @@ class EditScreen extends React.Component {
                         <button className="zoom_button" onClick={this.changeDimensions}>Change Dimensions</button>
                      </div>
                      <div style={{width: "100%", height: "100%", overflow: "scroll", position: "relative"}}>
-                        <div className="col" style={{height: this.state.height+"px", width: this.state.width+"px"}}>
-                            <div className="wireframe_box" style={{height: this.state.height+"px", width: this.state.width+"px"}} onClick={this.deselect.bind(this)}>
+                            <div className="wireframe_box" style={{height: this.state.height+"px", width: this.state.width+"px", transform:[{scale:this.state.zoom }]}} onClick={this.deselect.bind(this)}>
                                 {this.state.controls && this.state.controls.map(control => (
-                                    <Control refs={this.refs} control={control} wireframe={this.props.wireframe}></Control>
+                                        <Rnd
+                                            onClick={(e) => {this.handleSelection(e, control)}}
+                                            style={{
+                                            position: "absolute",
+                                            "font-size": control.font_size + "pt",
+                                            color: control.text_color,
+                                            "background-color": control.background_color,
+                                            "border-style": "solid",
+                                            "border-color": control.border_color,
+                                            "border-width": control.border_thickness + "px",
+                                            "border-radius": control.border_radius + "px",
+                                            cursor: "pointer"}} 
+                                            size={{width: control.width, height: control.height}}
+                                            position={{x: control.x_position, y: control.y_position}} 
+                                            enableResizing={this.state.selected == control ? {top:false, right:false, bottom:false, left:false, topRight:true, bottomRight:true, bottomLeft:true, topLeft:true} : {top:false, right:false, bottom:false, left:false, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false}} 
+                                            disableDragging={this.state.selected == control ? false : true}
+                                            onDragStop={(e,d) => {
+                                                this.handleSelection(e, control)
+                                                const selected = this.state.selected;
+                                                const newControls = this.props.wireframe.controls;
+                                                newControls[selected.key].x_position = d.x;
+                                                newControls[selected.key].y_position = d.y;
+                                                this.setState(state => ({
+                                                    ...state,
+                                                    controls: newControls
+                                                }))
+                                            }}
+                                            onResizeStop={(e, direction, ref, delta, position) => {
+                                                this.handleSelection(e, control)
+                                                const selected = this.state.selected;
+                                                const newControls = this.props.wireframe.controls;
+                                                newControls[selected.key].width = ref.style.width;
+                                                newControls[selected.key].height = ref.style.height;
+                                                this.setState(state => ({
+                                                    ...state,
+                                                    controls: newControls
+                                                }))
+                                            }}>
+                                            {control.text}
+                                        </Rnd>
                                 ))}
                             </div>
-                        </div>
                      </div>
                 </div>
                 
                 <div className="col s3 control_picker row">
                     <div>Properties</div>
-                    <input type="text" name="text" ref="text" disabled={this.props.wireframe.selected !== null ? false : true} onChange={this.handleTextChange.bind(this)} defaultValue={this.props.wireframe.selected !== null ? this.props.wireframe.selected.text : ''}></input>
+                    <input type="text" name="text" ref="text" disabled={this.state.selected !== null ? false : true} onChange={this.handleTextChange.bind(this)} defaultValue={this.state.selected !== null ? this.state.selected.text : ''}></input>
                     <div className="row">
                         <div className="col s4">Font Size:</div>
-                        <input type="number" name="text" ref="font_size" disabled={this.props.wireframe.selected !== null ? false : true}  onChange={this.handleFontSizeChange.bind(this)} min="1" max="72" className="col s7" defaultValue={this.props.wireframe.selected !== null ? this.props.wireframe.selected.font_size : ''}></input>
+                        <input type="number" name="text" ref="font_size" disabled={this.state.selected !== null ? false : true}  onChange={this.handleFontSizeChange.bind(this)} min="1" max="72" className="col s7" defaultValue={this.state.selected !== null ? this.state.selected.font_size : ''}></input>
                     </div>
                     <div class="divider"></div>
                     <div className="row">
                         <div className="col s4">Font Color:</div>
-                        <input type="color" name="text_color" ref="text_color" disabled={this.props.wireframe.selected !== null ? false : true}  onChange={this.handleFontColorChange.bind(this)} className="col s7" defaultValue={this.props.wireframe.selected !== null ? this.props.wireframe.selected.text_color : '#000000'}></input>
+                        <input type="color" name="text_color" ref="text_color" disabled={this.state.selected !== null ? false : true}  onChange={this.handleFontColorChange.bind(this)} className="col s7" defaultValue={this.state.selected !== null ? this.state.selected.text_color : '#000000'}></input>
                     </div>
                     <div class="divider"></div>
                     <div className="row">
                         <div className="col s4">Background:</div>
-                        <input type="color" name="background_color" ref="background_color" disabled={this.props.wireframe.selected !== null ? false : true}  onChange={this.handleBackgroundChange.bind(this)} className="col s7" defaultValue={this.props.wireframe.selected !== null ? this.props.wireframe.selected.background_color : '#000000'}></input>
+                        <input type="color" name="background_color" ref="background_color" disabled={this.state.selected !== null ? false : true}  onChange={this.handleBackgroundChange.bind(this)} className="col s7" defaultValue={this.state.selected !== null ? this.state.selected.background_color : '#000000'}></input>
                     </div>
                     <div class="divider"></div>
                     <div className="row">
                         <div className="col s4">Border Color:</div>
-                        <input type="color" name="border_color" ref="border_color" disabled={this.props.wireframe.selected !== null ? false : true}  onChange={this.handleBorderColorChange.bind(this)} className="col s7" defaultValue={this.props.wireframe.selected !== null ? this.props.wireframe.selected.border_color : '#000000'}></input>
+                        <input type="color" name="border_color" ref="border_color" disabled={this.state.selected !== null ? false : true}  onChange={this.handleBorderColorChange.bind(this)} className="col s7" defaultValue={this.state.selected !== null ? this.state.selected.border_color : '#000000'}></input>
                     </div>
                     <div class="divider"></div>
                     <div className="row">
                         <div className="col s4">Border Width:</div>
-                        <input type="number" name="border_thickness" ref="border_thickness" disabled={this.props.wireframe.selected !== null ? false : true}  onChange={this.handleBorderWidthChange.bind(this)} min="0" max="20" className="col s7" defaultValue={this.props.wireframe.selected !== null ? this.props.wireframe.selected.border_thickness : ''}></input>
+                        <input type="number" name="border_thickness" ref="border_thickness" disabled={this.state.selected !== null ? false : true}  onChange={this.handleBorderWidthChange.bind(this)} min="0" max="20" className="col s7" defaultValue={this.state.selected !== null ? this.state.selected.border_thickness : ''}></input>
                     </div>
                     <div class="divider"></div>
                     <div className="row">
                         <div className="col s4">Border Radius:</div>
-                        <input type="number" name="border_radius" ref="border_radius" disabled={this.props.wireframe.selected !== null ? false : true}  onChange={this.handleBorderRadiusChange.bind(this)} min="0" max="15" className="col s7" defaultValue={this.props.wireframe.selected !== null ? this.props.wireframe.selected.border_radius : ''}></input>
+                        <input type="number" name="border_radius" ref="border_radius" disabled={this.state.selected !== null ? false : true}  onChange={this.handleBorderRadiusChange.bind(this)} min="0" max="15" className="col s7" defaultValue={this.state.selected !== null ? this.state.selected.border_radius : ''}></input>
                     </div>
                 </div>
             </div>
