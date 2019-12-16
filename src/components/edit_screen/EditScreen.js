@@ -61,7 +61,7 @@ class EditScreen extends React.Component {
         const { target } = e;
         const targetName = target.name;
         const selected = this.state.selected;
-        const newControls = this.props.wireframe.controls;
+        const newControls = this.state.controls;
         newControls[selected.key].text = target.value;
 
         this.setState(state => ({
@@ -73,7 +73,7 @@ class EditScreen extends React.Component {
         const { target } = e;
         const targetName = target.name;
         const selected = this.state.selected;
-        const newControls = this.props.wireframe.controls;
+        const newControls = this.state.controls;
         newControls[selected.key].font_size = target.value;
 
         this.setState(state => ({
@@ -85,7 +85,7 @@ class EditScreen extends React.Component {
         const { target } = e;
         const targetName = target.name;
         const selected = this.state.selected;
-        const newControls = this.props.wireframe.controls;
+        const newControls = this.state.controls;
         newControls[selected.key].text_color = target.value;
 
         this.setState(state => ({
@@ -97,7 +97,7 @@ class EditScreen extends React.Component {
         const { target } = e;
         const targetName = target.name;
         const selected = this.state.selected;
-        const newControls = this.props.wireframe.controls;
+        const newControls = this.state.controls;
         newControls[selected.key].background_color = target.value;
 
         this.setState(state => ({
@@ -109,7 +109,7 @@ class EditScreen extends React.Component {
         const { target } = e;
         const targetName = target.name;
         const selected = this.state.selected;
-        const newControls = this.props.wireframe.controls;
+        const newControls = this.state.controls;
         newControls[selected.key].border_color = target.value;
 
         this.setState(state => ({
@@ -121,7 +121,7 @@ class EditScreen extends React.Component {
         const { target } = e;
         const targetName = target.name;
         const selected = this.state.selected;
-        const newControls = this.props.wireframe.controls;
+        const newControls = this.state.controls;
         newControls[selected.key].border_thickness = target.value;
 
         this.setState(state => ({
@@ -133,7 +133,7 @@ class EditScreen extends React.Component {
         const { target } = e;
         const targetName = target.name;
         const selected = this.state.selected;
-        const newControls = this.props.wireframe.controls;
+        const newControls = this.state.controls;
         newControls[selected.key].border_radius = target.value;
 
         this.setState(state => ({
@@ -434,7 +434,7 @@ class EditScreen extends React.Component {
                                             onDragStop={(e,d) => {
                                                 this.handleSelection(e, control)
                                                 const selected = this.state.selected;
-                                                const newControls = this.props.wireframe.controls;
+                                                const newControls = this.state.controls;
                                                 newControls[selected.key].x_position = d.x;
                                                 newControls[selected.key].y_position = d.y;
                                                 this.setState(state => ({
@@ -445,7 +445,7 @@ class EditScreen extends React.Component {
                                             onResizeStop={(e, direction, ref, delta, position) => {
                                                 this.handleSelection(e, control)
                                                 const selected = this.state.selected;
-                                                const newControls = this.props.wireframe.controls;
+                                                const newControls = this.state.controls;
                                                 newControls[selected.key].width = ref.style.width;
                                                 newControls[selected.key].height = ref.style.height;
                                                 this.setState(state => ({
