@@ -7,22 +7,25 @@ import WireframeListLinks from './WireframeListLinks'
 import { getFirestore } from 'redux-firestore';
 
 
-class HomeScreen extends Component {
+class HomeScreen extends React.Component {
     handleNewWireframe = () => {
         const history = this.props.history;
-        getFirestore().collection('wireframes').add({}).then((function(doc) {
-            getFirestore().collection('wireframes').doc(doc.id).set({
-                name: '',
-                height: 500,
-                width: 500,
-                authorID: this.props.auth.uid,
-                controls: []
-            })
-            history.push("/wireframe/" + doc.id);
-        }))
+        const ID = this.props.auth.uid;
+        const firestore = getFirestore();
+        firestore.collection('wireframes').add({
+            name: '',
+            height: 500,
+            width: 500,
+            authorID: ID,
+            selected: null,
+            controls: [],
+            time: Date.now()
+        }).then(function(doc) { 
+            history.push("wireframe/" + doc.id)
+        });
     }
 
-    render() {
+    render() { 
         if (!this.props.auth.uid) {
             return <Redirect to="/login" />;
         }
@@ -59,6 +62,6 @@ const mapStateToProps = (state) => {
 export default compose(
     connect(mapStateToProps),
     firestoreConnect([
-      { collection: 'wireframes' },
+      { collection: 'wireframes', orderBy: ["time", "desc"] },
     ]),
 )(HomeScreen);

@@ -28,7 +28,9 @@ class DatabaseTester extends React.Component {
                     name: wf.name,
                     height: wf.height,
                     width: wf.width,
-                    controls: wf.controls
+                    selected: wf.selected,
+                    controls: wf.controls,
+                    time: Date.now()
                 }).then(() => {
                     console.log("DATABASE RESET");
                 }).catch((err) => {

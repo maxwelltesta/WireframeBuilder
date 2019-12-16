@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import { Redirect } from 'react-router-dom';
 import { registerHandler } from '../../store/database/asynchHandler'
 
-class RegisterScreen extends Component {
+class RegisterScreen extends React.Component {
   state = {
     email: '',
     password: '',

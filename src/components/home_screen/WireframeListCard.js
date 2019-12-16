@@ -6,7 +6,7 @@ import { firestoreConnect, getFirebase } from 'react-redux-firebase';
 import { getFirestore } from 'redux-firestore';
 import { Modal, Button } from 'react-materialize';
 
-class WireframeListCard extends Component {
+class WireframeListCard extends React.Component {
     state = {
         modal: false,
     }

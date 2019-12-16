@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 
 import { loginHandler } from '../../store/database/asynchHandler'
 
-class LoginScreen extends Component {
+class LoginScreen extends React.Component {
   state = {
     email: '',
     password: '',

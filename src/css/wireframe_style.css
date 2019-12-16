@@ -122,7 +122,14 @@
     width:110%;
     margin: 2%;
   }
-
+  .wireframe_box {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    padding: 0 !important;
+    margin: 5px !important;
+    position: relative;
+  }
   .home_new_list_button {
     font-size: 20pt;
     border-radius: 15px;
