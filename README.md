@@ -1,8 +1,8 @@
 ![Register](https://github.com/maxwelltesta/wireframer_final/blob/master/Screen%20Shot%202020-01-22%20at%2011.38.26%20AM.png)
-![Login](/images/logo.png)
-![Homescreen](/images/logo.png)
-![Wireframer](/images/logo.png)
-![Selections](/images/logo.png)
+![Login](https://github.com/maxwelltesta/wireframer_final/blob/master/Screen%20Shot%202020-01-22%20at%2011.38.45%20AM.png)
+![Homescreen](https://github.com/maxwelltesta/wireframer_final/blob/master/Screen%20Shot%202020-01-22%20at%2011.39.19%20AM.png)
+![Wireframer](https://github.com/maxwelltesta/wireframer_final/blob/master/Screen%20Shot%202020-01-22%20at%2011.39.36%20AM.png)
+![Selections](https://github.com/maxwelltesta/wireframer_final/blob/master/Screen%20Shot%202020-01-22%20at%2011.40.30%20AM.png)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
