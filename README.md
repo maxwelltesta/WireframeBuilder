@@ -1,3 +1,9 @@
+![Register](https://github.com/maxwelltesta/wireframer_final/blob/master/Screen%20Shot%202020-01-22%20at%2011.38.26%20AM.png)
+![Login](/images/logo.png)
+![Homescreen](/images/logo.png)
+![Wireframer](/images/logo.png)
+![Selections](/images/logo.png)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
